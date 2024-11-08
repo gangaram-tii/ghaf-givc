@@ -479,6 +479,20 @@ impl pb::admin_service_server::AdminService for AdminService {
         })
         .await
     }
+
+    async fn suspend(
+        &self,
+        request: tonic::Request<Empty>,
+    ) -> std::result::Result<tonic::Response<Empty>, tonic::Status> {
+        escalate(request, |_| async {
+            self.inner
+                .send_system_command(String::from("suspend.target"))
+                .await;
+            Ok(Empty {})
+        })
+        .await
+    }
+    /*
     async fn suspend(
         &self,
         request: tonic::Request<Empty>,
@@ -491,6 +505,7 @@ impl pb::admin_service_server::AdminService for AdminService {
         })
         .await
     }
+    */
 
     async fn wakeup(
         &self,
